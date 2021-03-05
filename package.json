@@ -1,0 +1,19 @@
+{
+  "name": "balttleship",
+  "version": "1.0.0",
+  "description": "battleship game on node.js",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jakubturner/balttleship.git"
+  },
+  "author": "Jakub Turner",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jakubturner/balttleship/issues"
+  },
+  "homepage": "https://github.com/jakubturner/balttleship#readme"
+}
