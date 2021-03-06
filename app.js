@@ -1,6 +1,4 @@
-"use strict";
-
-function runOnStart() {
+document.addEventListener("DOMContentLoaded", function () {
   const userGrid = document.querySelector(".grid-user");
   const computerGrid = document.querySelector(".grid-computer");
   const displayGrid = document.querySelector(".grid-display");
@@ -16,6 +14,7 @@ function runOnStart() {
   const infoDisplay = document.querySelector("#info");
   const userSquares = [];
   const computerSquares = [];
+  let isHorizontal = true;
 
   const width = 10;
 
@@ -73,43 +72,117 @@ function runOnStart() {
     },
   ];
 
-  //   function generate(ship) {
-  //     let randomDirection = Math.floor(Math.random() * ship.directions.length);
-  //     let current = ship.directions[randomDirection];
-  //     if (randomDirection === 0) direction = 1;
-  //     if (randomDirection === 1) direction = 10;
-  //     let randomStart = Math.abs(
-  //       Math.floor(
-  //         Math.random() * computerSquares.length -
-  //           ship.directions[0].length * direction
-  //       )
-  //     );
+  // generate computers shp in random locations
 
-  //     const isTaken = current.some((index) =>
-  //       computerSquares[randomStart + index].classList.contains("taken")
-  //     );
-  //     const isAtRightEdge = current.some(
-  //       (index) => (randomStart + index) % width === width - 1
-  //     );
-  //     const isAtLeftEdge = current.some(
-  //       (index) => (randomStart + index) % width === 0
-  //     );
+  function generate(ship) {
+    let randomDirection = Math.floor(Math.random() * ship.directions.length);
+    let current = ship.directions[randomDirection];
+    if (randomDirection === 0) direction = 1;
+    if (randomDirection === 1) direction = 10;
+    let randomStart = Math.abs(
+      Math.floor(
+        Math.random() * computerSquares.length -
+          ship.directions[0].length * direction
+      )
+    );
 
-  //     if (!isTaken && !isAtRightEdge && !isAtLeftEdge)
-  //       current.forEach((index) =>
-  //         computerSquares[randomStart + index].classList.add("taken", ship.name)
-  //       );
-  //     else generate(ship);
-  //   }
+    const isTaken = current.some((index) =>
+      computerSquares[randomStart + index].classList.contains("taken")
+    );
+    const isAtRightEdge = current.some(
+      (index) => (randomStart + index) % width === width - 1
+    );
+    const isAtLeftEdge = current.some(
+      (index) => (randomStart + index) % width === 0
+    );
 
-  //   generate(shipArray[0]);
+    if (!isTaken && !isAtRightEdge && !isAtLeftEdge)
+      current.forEach((index) =>
+        computerSquares[randomStart + index].classList.add("taken", ship.name)
+      );
+    else generate(ship);
+  }
 
-  /////// there is ending runonstat function
-}
-if (document.readyState !== "loading") {
-  runOnStart();
-} else {
-  document.addEventListener("DOMContentLoaded", function () {
-    runOnStart();
-  });
-}
+  generate(shipArray[0]);
+  generate(shipArray[1]);
+  generate(shipArray[2]);
+  generate(shipArray[3]);
+  generate(shipArray[4]);
+
+  // rotate ships
+
+  function rotate() {
+    if (isHorizontal) {
+      destroyer.classList.toggle("destroyer-container-vertical");
+      submarine.classList.toggle("submarine-container-vertical");
+      cruiser.classList.toggle("cruiser-container-vertical");
+      battleship.classList.toggle("battleship-container-vertical");
+      carrier.classList.toggle("carrier-container-vertical");
+      isHorizontal = false;
+      console.log(isHorizontal);
+      return;
+    }
+    if (!isHorizontal) {
+      destroyer.classList.toggle("destroyer-container");
+      submarine.classList.toggle("submarine-container");
+      cruiser.classList.toggle("cruiser-container");
+      battleship.classList.toggle("battleship-container");
+      carrier.classList.toggle("carrier-container");
+      isHorizontal = false;
+      console.log(isHorizontal);
+      return;
+    }
+  }
+  rotateButton.addEventListener("click", rotate);
+
+  // move around user ships
+
+  ships.forEach((ship) => ship.addEventListener("dragstart", dragStart));
+  userSquares.forEach((square) =>
+    square.addEventListener("dragstart", dragStart)
+  );
+  userSquares.forEach((square) =>
+    square.addEventListener("dragover", dragOver)
+  );
+  userSquares.forEach((square) =>
+    square.addEventListener("dragEnter", dragEnter)
+  );
+  userSquares.forEach((square) =>
+    square.addEventListener("dragLeave", dragLeave)
+  );
+  userSquares.forEach((square) => square.addEventListener("drop", dragDrop));
+  userSquares.forEach((square) => square.addEventListener("dragend", dragEnd));
+
+  let selectedShipNameWithIndex;
+  let draggedShip;
+  let draggedShipLength;
+
+  ships.forEach((ship) =>
+    ship.addEventListener("mousedown", (e) => {
+      selectedShipNameWithIndex = e.target.id;
+    })
+  );
+
+  function dragStart() {
+    draggedShip = this;
+    draggedShiplength = this.childNodes.length;
+    console.log(draggedShip);
+  }
+
+  function dragOver(e) {
+    e.preventDefault();
+  }
+  function dragEnter(e) {
+    e.preventDefault();
+  }
+  function dragLeave(e) {
+    e.preventDefault();
+  }
+  function dragDrop() {
+    let shipNameWithLastId = draggedShip.lastChild.id;
+    let schipClass = shipNameWithLastId.slice(0, -2);
+    console.log(schipClass);
+  }
+
+  function dragEnd() {}
+});
